@@ -44,13 +44,16 @@ Configure OAuth Scopes to include: https://www.googleapis.com/auth/gmail.modify.
 Install Dependencies:
 
 Bash
-pip install fastapi uvicorn pymongo pywebpush cryptography
+pip install fastapi uvicorn pymongo pywebpush cryptography ecdsa
+
 Environment Variables: Ensure VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY are set in main.py for Web Push functionality.
 
 Run Server:
 
 Bash
 uvicorn main:app --reload
+
+
 3. Frontend Setup
 Install Dependencies: npm install
 
@@ -59,6 +62,7 @@ Service Worker: Ensure public/sw.js is present to handle the push event.
 Run Development: npm run dev
 
 🔄 Lifecycle of an Email
+
 Draftly ensures data integrity by following a strict state transition. This prevents duplicate replies and ensures your dashboard stays clean.
 
 Syncing: New unread emails are analyzed; if actionable, they enter the DB as status: "not_replied".
@@ -70,7 +74,8 @@ Sending: Upon clicking "Approve", the backend sets status to sending.
 Completion: Once Gmail API confirms delivery, the backend removes the UNREAD label in Gmail and updates the DB to status: "replied".
 
 🛑 Common Troubleshooting
-Hydration Error: If browser extensions interfere with the DOM, use suppressHydrationWarning on the loading state <div>.
+
+Hydration Error: If browser extensions interfere with the DOM, use suppressHydrationWarning on the loading state.
 
 403 Forbidden: If the app fails to mark as read, you must re-authenticate to approve the updated gmail.modify scope.
 
