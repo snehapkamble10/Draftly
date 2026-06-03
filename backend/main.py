@@ -95,7 +95,6 @@ async def sync_emails(payload: dict = Body(...)):
     synced_count = 0
     for msg in messages:
         db.emails.find_one({"message_id": msg['id']})
-
         detail = service.users().messages().get(userId='me', id=msg['id']).execute()
         headers = detail.get('payload', {}).get('headers', [])
         subject = next((h['value'] for h in headers if h['name'] == 'Subject'), "No Subject")
