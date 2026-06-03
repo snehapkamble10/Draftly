@@ -1,12 +1,6 @@
-
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoClient } from "mongodb";
-
-// Initialize your MongoDB client
-// const client = new MongoClient(process.env.MONGO_URI!);
-// const db = client.db("draftme");
-
 
 if (!process.env.MONGO_URI) {
   throw new Error('Invalid/Missing environment variable: "MONGO_URI"');
@@ -14,10 +8,8 @@ if (!process.env.MONGO_URI) {
 
 const uri = process.env.MONGO_URI;
 const options = {};
-console.log(uri);
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
-//let db = client.db("draftme");
 
 // This prevents creating multiple connections during hot-reloads in development
 if (process.env.NODE_ENV === "development") {
@@ -36,7 +28,6 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export default clientPromise;
-console.log("I am here");
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
