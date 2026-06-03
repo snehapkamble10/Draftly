@@ -94,37 +94,33 @@ async def sync_emails(payload: dict = Body(...)):
 
     synced_count = 0
     for msg in messages:
-        email_doc = db.emails.find_one({"message_id": msg['id']})
-        email_status = email_doc.get('status') 
-        if email_doc and email_status == "replied":
-            continue
-        else:
-            print(f"Processing message: {msg['id']}")
-            detail = service.users().messages().get(userId='me', id=msg['id']).execute()
-            headers = detail.get('payload', {}).get('headers', [])
-            subject = next((h['value'] for h in headers if h['name'] == 'Subject'), "No Subject")
-            sender = next((h['value'] for h in headers if h['name'] == 'From'), "Unknown")
-            snippet = detail.get('snippet', "")
-            thread_id = detail.get('threadId')  # thread-id
+        db.emails.find_one({"message_id": msg['id']})
 
-            if is_email_respondable(snippet, subject, sender):
-                db.emails.update_one(
-                    {"message_id": msg['id']},
-                    {
-                        "$set": {
-                            "status": "not_replied", # Initialize new mail as not_replied
-                            "user_email": user_email,
-                            "subject": subject,
-                            "sender": sender,
-                            "snippet": snippet, # Standardized name
-                            "is_respondable": True,
-                            "thread_id": thread_id,
-                            "synced_at": datetime.now() # Now works with import
-                        }
-                    },
-                    upsert=True
-                )
-                synced_count += 1
+        detail = service.users().messages().get(userId='me', id=msg['id']).execute()
+        headers = detail.get('payload', {}).get('headers', [])
+        subject = next((h['value'] for h in headers if h['name'] == 'Subject'), "No Subject")
+        sender = next((h['value'] for h in headers if h['name'] == 'From'), "Unknown")
+        snippet = detail.get('snippet', "")
+        thread_id = detail.get('threadId')  # thread-id
+
+        if is_email_respondable(snippet, subject, sender):
+            db.emails.update_one(
+                {"message_id": msg['id']},
+                {
+                    "$set": {
+                        "status": "not_replied", # Initialize new mail as not_replied
+                        "user_email": user_email,
+                        "subject": subject,
+                        "sender": sender,
+                        "snippet": snippet, # Standardized name
+                        "is_respondable": True,
+                        "thread_id": thread_id,
+                        "synced_at": datetime.now() # Now works with import
+                    }
+                },
+                upsert=True
+            )
+            synced_count += 1
             
         if synced_count > 0:
             return {
