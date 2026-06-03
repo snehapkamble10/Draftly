@@ -1,0 +1,20 @@
+# Web Framework
+fastapi
+uvicorn
+
+# Database
+pymongo==4.17.0
+python-dotenv==1.0.1
+
+# AI & LLM
+openai==2.38.0
+# langchain==0.4.5
+
+# Google APIs
+google-api-python-client==2.197.0
+google-auth-oauthlib==1.4.0
+google-auth-httplib2==0.2.0
+
+# Utilities
+beautifulsoup4==4.13.0
+cryptography==44.0.0
